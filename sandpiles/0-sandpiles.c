@@ -54,7 +54,7 @@ short int is_stable(int grid[3][3])
 		}
 	}
 
-	return stable;
+	return (stable);
 }
 
 /**
