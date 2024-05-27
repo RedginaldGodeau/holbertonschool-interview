@@ -107,12 +107,12 @@ void sandpiles_sum(int grid1[3][3], int grid2[3][3])
             int x = i % 3;
             int y = i / 3;
 
-            if (is_stable(grid1) == 1)
-                break;
-
             sandfall(grid1, x, y);
             printf("=\n");
             print_grid(grid1);
+
+            if (is_stable(grid1) == 1)
+                break;
         }
     }
 }
