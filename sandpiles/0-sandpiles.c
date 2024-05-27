@@ -6,7 +6,8 @@
  * @x: int
  * @y: int
  */
-void sandfall (int grid[3][3], int x, int y) {
+void sandfall(int grid[3][3], int x, int y)
+{
     if (grid[y][x] > 3)
     {
         grid[y][x] -= 4;
@@ -33,10 +34,10 @@ void sandfall (int grid[3][3], int x, int y) {
 /**
  * is_stable - check if stable
  * @grid: 3x3 grid
- * 
+ *
  * Return: 1 or 0
  */
-short int is_stable (int grid[3][3])
+short int is_stable(int grid[3][3])
 {
     short int stable = 1;
     size_t i = 0;
@@ -97,12 +98,12 @@ void sandpiles_sum(int grid1[3][3], int grid2[3][3])
     while (is_stable(grid1) == 0)
     {
         if (is_stable(grid1) == 1)
-                break;
+            break;
 
         printf("=\n");
         print_grid(grid1);
 
-       for (i = 0; i < 9; i++)
+        for (i = 0; i < 9; i++)
         {
             int x = i % 3;
             int y = i / 3;
