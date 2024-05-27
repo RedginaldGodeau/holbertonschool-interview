@@ -99,6 +99,9 @@ void sandpiles_sum(int grid1[3][3], int grid2[3][3])
         if (is_stable(grid1) == 1)
                 break;
 
+        printf("=\n");
+        print_grid(grid1);
+
        for (i = 0; i < 9; i++)
         {
             int x = i % 3;
@@ -109,7 +112,5 @@ void sandpiles_sum(int grid1[3][3], int grid2[3][3])
 
             sandfall(grid1, x, y);
         }
-        printf("=\n");
-        print_grid(grid1);
     }
 }
