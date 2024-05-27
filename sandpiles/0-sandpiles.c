@@ -55,6 +55,28 @@ short int is_stable (int grid[3][3])
 
     return stable;
 }
+
+/**
+ * print_grid - Print 3x3 grid
+ * @grid: 3x3 grid
+ *
+ */
+static void print_grid(int grid[3][3])
+{
+    int i, j;
+
+    for (i = 0; i < 3; i++)
+    {
+        for (j = 0; j < 3; j++)
+        {
+            if (j)
+                printf(" ");
+            printf("%d", grid[i][j]);
+        }
+        printf("\n");
+    }
+}
+
 /**
  * sandpiles_sum - sandpiles
  * @grid1: 3x3 grid
@@ -63,7 +85,7 @@ short int is_stable (int grid[3][3])
 void sandpiles_sum(int grid1[3][3], int grid2[3][3])
 {
     size_t i = 0;
-    
+
     for (i = 0; i < 9; i++)
     {
         int x = i % 3;
@@ -72,14 +94,25 @@ void sandpiles_sum(int grid1[3][3], int grid2[3][3])
         grid1[y][x] += grid2[y][x];
     }
 
-    while (is_stable(grid1) == 0)
+    printf("=\n");
+    print_grid(grid1);
+
+    while (1)
     {
+        if (is_stable(grid1) == 1)
+                break;
+
        for (i = 0; i < 9; i++)
         {
+            if (is_stable(grid1) == 1)
+                break;
+
             int x = i % 3;
             int y = i / 3;
 
             sandfall(grid1, x, y);
+            printf("=\n");
+            print_grid(grid1);
         }
     }
 }
