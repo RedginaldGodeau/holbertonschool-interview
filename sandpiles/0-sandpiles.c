@@ -61,7 +61,8 @@ short int is_stable (int grid[3][3])
  */
 void sandpiles_sum(int grid1[3][3], int grid2[3][3])
 {
-    for (size_t i = 0; i < 9; i++)
+    size_t i = 0;
+    for (i = 0; i < 9; i++)
     {
         int x = i % 3;
         int y = i / 3;
@@ -71,7 +72,7 @@ void sandpiles_sum(int grid1[3][3], int grid2[3][3])
 
     while (is_stable(grid1) == 0)
     {
-       for (size_t i = 0; i < 9; i++)
+       for (i = 0; i < 9; i++)
         {
             int x = i % 3;
             int y = i / 3;
