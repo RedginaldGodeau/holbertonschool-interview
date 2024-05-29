@@ -30,10 +30,10 @@ int slide_left(int *line, size_t size)
         }
     }
 
-    for (i = size - 1; i >= 0; i--)
+    for (i = 0; i < size; i++)
     {
         if (line[i] == 0) {
-            for (i2 = i; i2 >= (int) 0; i2--)
+            for (i2 = i; i2 < size; i2++)
             {
                 if (line[i2] == 0)
                     continue;
