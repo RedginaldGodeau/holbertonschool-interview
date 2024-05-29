@@ -26,7 +26,7 @@ int slide_left(int *line, size_t size)
     {
         if (line[i] == line[i - 1]) {
             line[i] = 0;
-            line[i - 1] *= line[i - 1];
+            line[i - 1] += line[i - 1];
         }
     }
 
@@ -60,7 +60,7 @@ int slide_right(int *line, size_t size)
     {
         if (line[i] == line[i + 1]) {
             line[i] = 0;
-            line[i + 1] *= line[i + 1];
+            line[i + 1] += line[i + 1];
         }
     }
 
