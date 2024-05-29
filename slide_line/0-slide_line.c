@@ -30,6 +30,24 @@ int slide_left(int *line, size_t size)
         }
     }
 
+    for (i = size - 1; i >= 0; i--)
+    {
+        if (line[i] == 0) {
+            for (i2 = i; i2 >= (int) 0; i2--)
+            {
+                if (line[i2] == 0)
+                    continue;
+                else
+                {
+                    int temp = line[i2];
+                    line[i2] = 0;
+                    line[i] = temp;
+                    break;
+                }
+            }
+        }
+    }
+
     return (1);
 }
 
@@ -61,6 +79,24 @@ int slide_right(int *line, size_t size)
         if (line[i] == line[i + 1]) {
             line[i] = 0;
             line[i + 1] += line[i + 1];
+        }
+    }
+
+    for (i = size - 1; i >= 0; i--)
+    {
+        if (line[i] == 0) {
+            for (i2 = i; i2 >= (int) 0; i2--)
+            {
+                if (line[i2] == 0)
+                    continue;
+                else
+                {
+                    int temp = line[i2];
+                    line[i2] = 0;
+                    line[i] = temp;
+                    break;
+                }
+            }
         }
     }
 
