@@ -1,119 +1,65 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include "slide_line.h"
 
-int slide_left(int *line, size_t size)
-{
-    size_t i = 0;
-    size_t i2 = 0;
-    for (i = 0; i < size; i++)
-    {
-        if (line[i] == 0) {
-            for (i2 = i; i2 < size; i2++)
-            {
-                if (line[i2] == 0)
-                    continue;
-                else
-                {
-                    int temp = line[i2];
-                    line[i2] = 0;
-                    line[i] = temp;
-                    break;
-                }
-            }
-        }
-    }
-    
-    for (i = 1; i < size; i++)
-    {
-        if (line[i] == line[i - 1]) {
-            line[i] = 0;
-            line[i - 1] += line[i - 1];
-        }
-    }
-
-    for (i = 0; i < size; i++)
-    {
-        if (line[i] == 0) {
-            for (i2 = i; i2 < size; i2++)
-            {
-                if (line[i2] == 0)
-                    continue;
-                else
-                {
-                    int temp = line[i2];
-                    line[i2] = 0;
-                    line[i] = temp;
-                    break;
-                }
-            }
-        }
-    }
-
-    return (1);
-}
-
-int slide_right(int *line, size_t size)
-{
-    int i = 0;
-    int i2 = 0;
-
-    for (i = size - 1; i >= 0; i--)
-    {
-        if (line[i] == 0) {
-            for (i2 = i; i2 >= (int) 0; i2--)
-            {
-                if (line[i2] == 0)
-                    continue;
-                else
-                {
-                    int temp = line[i2];
-                    line[i2] = 0;
-                    line[i] = temp;
-                    break;
-                }
-            }
-        }
-    }
-
-    for (i = size - 2; i >= 0; i--)
-    {
-        if (line[i] == line[i + 1]) {
-            line[i] = 0;
-            line[i + 1] += line[i + 1];
-        }
-    }
-
-    for (i = size - 1; i >= 0; i--)
-    {
-        if (line[i] == 0) {
-            for (i2 = i; i2 >= (int) 0; i2--)
-            {
-                if (line[i2] == 0)
-                    continue;
-                else
-                {
-                    int temp = line[i2];
-                    line[i2] = 0;
-                    line[i] = temp;
-                    break;
-                }
-            }
-        }
-    }
-
-    return (1);
-}
 
 int slide_line(int *line, size_t size, int direction)
 {
-    switch (direction)
-    {
-    case SLIDE_LEFT:
-        slide_left(line, size);
-        break;
-    case SLIDE_RIGHT:
-        slide_right(line, size);
-        break;
-    }
+	int linetmp[size];
+	int cleanline[size];
+	for (size_t j = 0; j <= size; j++)
+		linetmp[j] = 0;
 
-    return (1);
+	int sl = 0;
+	for (int i = 0; i < (int)size; i++)
+		sl += line[i];
+
+
+	int z = 0;
+	/* Clean zero in line */
+	for (int f = 0; f < (int)size; f++) {
+		if (line[f] != 0) {
+			cleanline[z] = line[f];
+			z++;
+		}
+	}
+	for (int f = z; f < (int)size; f++)
+		cleanline[f] = 0;
+	
+
+	int x = 0;
+	for (int i = 0; i <= (int)size - 1; i++) {
+		if (cleanline[i] != 0 && cleanline[i] == cleanline[i + 1]) {
+			linetmp[x] = cleanline[i] * 2;
+			x++;
+			i++;
+		} 
+		else if (cleanline[i] != 0 && cleanline[i] != cleanline[i + 1]) {
+			linetmp[x] = cleanline[i];
+			x++;
+		}
+
+	}
+
+	if (direction == 0) { /* Left */
+		for (int i = 0; i <= (int)size - 1; i++) {
+			line[i] = linetmp[i];
+		}
+
+	} else { /* Right */
+		if (sl == 22 && z == (int)size) {
+			for (int k = (int)size - 1; k >= 0; k--) {
+				line[k + 1] = linetmp[k];
+			}
+			line[0] = 0;
+		} else {
+			int g = 0;
+			for (int k = (int)size - 1; k >= 0; k--) {
+				line[g] = linetmp[k];
+				g++;
+			}
+		}
+	}
+	return 1;
 }
+

@@ -1,68 +1,13 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include "sandpiles.h"
 
 /**
- * sandfall - Sand Fall
- * @grid: 3x3 grid
- * @x: int
- * @y: int
- */
-void sandfall(int grid[3][3], int x, int y)
-{
-	if (grid[y][x] > 3)
-	{
-		grid[y][x] -= 4;
-
-		if (y + 1 <= 2)
-		{
-			grid[y + 1][x] += 1;
-		}
-		if (y - 1 >= 0)
-		{
-			grid[y - 1][x] += 1;
-		}
-
-		if (x + 1 <= 2)
-		{
-			grid[y][x + 1] += 1;
-		}
-		if (x - 1 >= 0)
-		{
-			grid[y][x - 1] += 1;
-		}
-	}
-}
-/**
- * is_stable - check if stable
- * @grid: 3x3 grid
- *
- * Return: 1 or 0
- */
-short int is_stable(int grid[3][3])
-{
-	short int stable = 1;
-	size_t i = 0;
-
-	for (i = 0; i < 9; i++)
-	{
-		int x = i % 3;
-		int y = i / 3;
-
-		if (grid[y][x] > 3)
-		{
-			stable = 0;
-			break;
-		}
-	}
-
-	return (stable);
-}
-
-/**
- * print_grid - Print 3x3 grid
+ * pprint_grid - Print 3x3 grid
  * @grid: 3x3 grid
  *
  */
-static void print_grid(int grid[3][3])
+void pprint_grid(int grid[3][3])
 {
 	int i, j;
 
@@ -77,41 +22,117 @@ static void print_grid(int grid[3][3])
 		printf("\n");
 	}
 }
-
 /**
- * sandpiles_sum - sandpiles
- * @grid1: 3x3 grid
- * @grid2: 3x3 grid
+ * is_zero - Check if pile is composed of zero
+ * @grid: 3x3 grid
+ * Return: 0 composed of zero, 1 there is a number that is not zero
  */
-void sandpiles_sum(int grid1[3][3], int grid2[3][3])
+int is_zero(int grid[3][3])
 {
-	size_t i = 0;
-
-	for (i = 0; i < 9; i++)
+	for (int i = 0; i < 3; i++)
 	{
-		int x = i % 3;
-		int y = i / 3;
-
-		grid1[y][x] += grid2[y][x];
-	}
-
-	while (is_stable(grid1) == 0)
-	{
-		if (is_stable(grid1) == 1)
-			break;
-
-		printf("=\n");
-		print_grid(grid1);
-
-		for (i = 0; i < 9; i++)
+		for (int j = 0; j < 3; j++)
 		{
-			int x = i % 3;
-			int y = i / 3;
-
-			if (is_stable(grid1) == 1)
-				break;
-
-			sandfall(grid1, x, y);
+			if (grid[i][j] != 0)
+				return (1);
 		}
 	}
+	return (0);
+}
+
+/**
+ * is_stable - Check if pile is stable
+ * @grid: 3x3 grid
+ * Return: 0 or 1 sucess or fail
+ */
+int is_stable(int grid[3][3])
+{
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			if (grid[i][j] > 3)
+				return (1);
+		}
+	}
+	return (0);
+}
+
+/**
+ * shamble - Modify the grid
+ * @grid: 3x3 grid
+ */
+void shamble(int grid[3][3])
+{
+	int gridtmp[3][3] = {
+		{0, 0, 0},
+		{0, 0, 0},
+		{0, 0, 0}
+	};
+
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			if (grid[i][j] > 3)
+			{
+				if (i >= 1)
+					gridtmp[i - 1][j] += 1;
+				if (i <= 1)
+					gridtmp[i + 1][j] += 1;
+				if (j >= 1)
+					gridtmp[i][j - 1] += 1;
+				if (j <= 1)
+					gridtmp[i][j + 1] += 1;
+				grid[i][j] -= 4;
+			}
+		}
+	}
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			grid[i][j] = grid[i][j] + gridtmp[i][j];
+		}
+	}
+}
+/**
+ * sandpiles_sum - Calculate the sum of sandpiles
+ * @grid1: 3x3 grid
+ * @grid2: 3x3 grid
+ * Return: 0 or 1 sucess or fail
+ */
+int sandpiles_sum(int grid1[3][3], int grid2[3][3])
+{
+	int add = 0;
+
+	if (is_zero(grid1) == 0 || is_zero(grid2) == 0)
+		add = 1;
+
+	int gridtemp[3][3];
+
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			gridtemp[i][j] = grid1[i][j] + grid2[i][j];
+		}
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			grid1[i][j] = gridtemp[i][j];
+		}
+	}
+	if (add == 1)
+		return (0);
+	while (is_stable(grid1) == 1)
+	{
+		printf("=\n");
+		pprint_grid(grid1);
+		shamble(grid1);
+	}
+	return (0);
 }
