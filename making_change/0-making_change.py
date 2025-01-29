@@ -1,14 +1,23 @@
 #!/usr/bin/python3
-""" Make change calculator 3000 !! """
-import typing
+"""Making Change great again"""
+import math
 
-def makeChange(coins: typing.List[str], total: int):
-    """ Return the minimum number of coins to reach the total """
-    if total <= 0:
-        return 0
-    dp = [total + 1] * (total + 1)
-    dp[0] = 0
-    for coin in coins:
-        for i in range(coin, total + 1):
-            dp[i] = min(dp[i], dp[i - coin] + 1)
-    return dp[total] if dp[total] != total + 1 else -1
+
+def makeChange(coins, total):
+    """Given a pile of coins of different values"""
+    cointNeeded = 0
+
+    while total > 0:
+        if not coins:
+            return -1
+
+        greatest = max(coins)
+        howManyTimeNeedToBeDivided = math.floor(total / greatest)
+
+        if howManyTimeNeedToBeDivided == 0:
+            coins.remove(greatest)
+            continue
+
+        total -= greatest * howManyTimeNeedToBeDivided
+        cointNeeded += howManyTimeNeedToBeDivided
+    return cointNeeded if total == 0 else -1
