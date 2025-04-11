@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-
 def isWinner(x, nums):
     """Determines the winner of a game played between Maria and Ben.
 
@@ -13,14 +12,6 @@ def isWinner(x, nums):
         str: The name of the player that won the most rounds ("Maria" or "Ben").
              Returns None if the winner cannot be determined.
     """
-    if not nums or x <= 0:
-        return None
-
-
-if __name__ == "__main__":
-    x = 3
-    nums = [4, 5, 1]
-    print("Winner: {}".format(isWinner(x, nums)))
     def get_primes(n):
         """Generates a list of prime numbers up to n."""
         primes = []
@@ -40,16 +31,30 @@ if __name__ == "__main__":
     maria_wins = 0
     ben_wins = 0
 
-    for n_val in nums:
-        primes = get_primes(n_val)
+    for _ in range(x):
+        n = nums[_]
+        primes = get_primes(n)
         if not primes:
             ben_wins += 1
             continue
 
-        if n_val % 2 == 0:
-            maria_wins += 1
-        else:
-            ben_wins += 1
+        nums_set = list(range(1, n + 1))
+        moves = 0
+        turn = 0  # 0 for Maria, 1 for Ben
+
+        while True:
+            possible_moves = [p for p in primes if p in nums_set]
+            if not possible_moves:
+                if turn == 0:
+                    ben_wins += 1
+                else:
+                    maria_wins += 1
+                break
+
+            move = possible_moves[0]
+            nums_set = [num for num in nums_set if num % move != 0]
+            turn = 1 - turn
+            moves += 1
 
     if maria_wins > ben_wins:
         return "Maria"
@@ -57,3 +62,8 @@ if __name__ == "__main__":
         return "Ben"
     else:
         return None
+
+if __name__ == "__main__":
+    x = 3
+    nums = [4, 5, 1]
+    print("Winner: {}".format(isWinner(x, nums)))
