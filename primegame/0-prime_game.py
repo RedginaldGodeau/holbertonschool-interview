@@ -1,5 +1,9 @@
 #!/usr/bin/python3
 
+"""
+Cool Code right ?
+"""
+
 def isWinner(x, nums):
     """Determines the winner of a game played between Maria and Ben.
 
