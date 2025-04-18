@@ -1,69 +1,54 @@
 #!/usr/bin/python3
-"""Reads stdin line by line and computes metrics.
-
-Input format: <IP Address> - [<date>] "GET /projects/260 HTTP/1.1" <status code> <file size>
-After every 10 lines and/or a keyboard interruption (CTRL + C), prints statistics from the beginning:
-Total file size: File size: <total size>
-where <total size> is the sum of all previous <file size> (see input format above)
-Number of lines by status code:
-possible status code: 200, 301, 400, 401, 403, 404, 405 and 500
-if a status code doesn’t appear or is not an integer, don’t print anything for this status code
-format: <status code>: <number>
-status codes should be printed in ascending order
+"""
+make a resume of request
 """
 import sys
+import signal
 import re
 
-# Initialize total file size
-total_size = 0
 
-# Initialize status code counts
-status_codes = {
-    '200': 0,
-    '301': 0,
-    '400': 0,
-    '401': 0,
-    '403': 0,
-    '404': 0,
-    '405': 0,
-    '500': 0
-}
+def print_result(dictstatus: dict[str, int], filesize: int):
+    print(f"File size: {filesize}")
+    array_keys: [str] = []
+    for k in dictstatus.keys():
+        array_keys.append(k)
+    array_keys.sort()
+    for keys in array_keys:
+        print(f"{keys}: {dictstatus[keys]}")
 
-# Initialize line count
-line_count = 0
 
-try:
-    # Read input line by line from stdin
+def denied(_signalno, _stack):
+    print_result(d, fileSize)
+    sys.exit(0)
+
+if __name__ == '__main__':
+    fileSize: int = 0
+    status: str = ""
+    d: dict[str, int] = {}
+    nbLine: int = 0
+
+    signal.signal(signal.SIGTERM, denied)
+    signal.signal(signal.SIGINT, denied)
+
     for line in sys.stdin:
-        # Remove leading/trailing whitespace
-        line = line.strip()
-        # Use regex to match the input format
-        match = re.match(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - \[.+\] "GET \/projects\/260 HTTP\/1\.1" (\d+) (\d+)', line)
-        # If the line matches the expected format
-        if match:
-            # Extract status code and file size from the matched groups
-            status_code = match.group(2)
-            file_size = int(match.group(3))
+        if re.search("^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} - \[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d+\] \"GET \/projects\/260 HTTP\/1\.1\" \d{3} \d{1,4}$", line) is None:
+            print(f"skipped: {line}")
+            continue
+        if line == "":
+            continue
+        inputSplit = line.split(" ")
+        n: str = inputSplit.pop()
+        if '\n' not in n:
+            continue
+        fileSize += int(n.replace('\n', ""))
+        status = inputSplit.pop()
+        value = d.get(status)
+        if value:
+            d[status] = value + 1
+        else:
+            d[status] = 1
 
-            # Update total file size
-            total_size += file_size
-            # Update status code count if it's a valid status code
-            if status_code in status_codes:
-                status_codes[status_code] += 1
-
-            # Increment line count
-            line_count += 1
-
-            # Print statistics every 10 lines
-            if line_count % 10 == 0:
-                print("File size: {}".format(total_size))
-                for code in sorted(status_codes.keys()):
-                    if status_codes[code] > 0:
-                        print("{}: {}".format(code, status_codes[code]))
-
-# Handle keyboard interruption (CTRL + C)
-except KeyboardInterrupt:
-    print("File size: {}".format(total_size))
-    for code in sorted(status_codes.keys()):
-        if status_codes[code] > 0:
-            print("{}: {}".format(code, status_codes[code]))
+        nbLine += 1
+        if nbLine % 10 == 0:
+            print_result(d, fileSize)
+    print_result(d, fileSize)
