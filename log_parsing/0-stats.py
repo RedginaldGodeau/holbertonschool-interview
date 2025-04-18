@@ -31,22 +31,18 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, denied)
 
     for line in sys.stdin:
-        if re.search("^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} - \[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d+\] \"GET \/projects\/260 HTTP\/1\.1\" \d{3} \d{1,4}$", line) is None:
-            print(f"skipped: {line}")
+        try:
+            inputSplit = line.split(" ")
+            n: str = inputSplit[-1]
+            fileSize += int(n.replace('\n', ""))
+            status = inputSplit[-2]
+            value = d.get(status)
+            if value:
+                d[status] = value + 1
+            else:
+                d[status] = 1
+        except:
             continue
-        if line == "":
-            continue
-        inputSplit = line.split(" ")
-        n: str = inputSplit.pop()
-        if '\n' not in n:
-            continue
-        fileSize += int(n.replace('\n', ""))
-        status = inputSplit.pop()
-        value = d.get(status)
-        if value:
-            d[status] = value + 1
-        else:
-            d[status] = 1
 
         nbLine += 1
         if nbLine % 10 == 0:
